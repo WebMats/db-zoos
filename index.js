@@ -15,6 +15,9 @@ const db = knex(knexConfig);
 server.use(express.json());
 server.use(helmet());
 
+const bearsRouter = require('./routes/bears');
+server.use('/api/bears', bearsRouter);
+
 // endpoints here
 
 server.post('/api/zoos', async (req, res, next) => {
@@ -22,7 +25,7 @@ server.post('/api/zoos', async (req, res, next) => {
     res.status(404).json({errorMessage: "Please provide a name for the zoo."})
   }
   try {
-    const id = await db('zoos').insert(req.body);
+    const [id] = await db('zoos').insert(req.body);
     res.status(201).json({id})
   } catch (err) {
     res.status(500).json({errorMessage: "Could not create zoo."})
